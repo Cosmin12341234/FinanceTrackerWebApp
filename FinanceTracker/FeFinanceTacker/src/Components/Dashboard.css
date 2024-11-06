@@ -1,0 +1,133 @@
+html, body, #root, .app-container {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+.dashboard-container {
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgb(108, 11, 11);
+    background-image: url('src/imagini/jkki6.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.sidebar {
+    flex: 0 0 33%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgb(147, 3, 3);
+    color: #000000;
+    border-right: 1px solid #930303;
+}
+
+.logo {
+    font-size: 100px;
+    margin-bottom: 20px;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background: rgba(108, 11, 11, 0.9);
+    color: #000000;
+    overflow: hidden;
+}
+
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-spending-form {
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    width: 100%;
+    max-width: 300px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: #fff;
+    color: #000;
+    box-sizing: border-box;
+}
+
+.add-button {
+    width: 100%;
+    max-width: 300px;
+    padding: 8px;
+    background-color: #930303;
+    color: #000000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.add-button:hover {
+    background-color: #da0909;
+}
+
+.spendings-container {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.spendings-list ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.spendings-list li {
+    width: 100%;
+    max-width: 700px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #930303;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.spendings-list .remove-button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.spendings-list .remove-button:hover {
+    color: red;
+}
