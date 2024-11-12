@@ -1,133 +1,115 @@
-html, body, #root, .app-container {
-    height: 100%;
-    margin: 0;
-    overflow: hidden;
-}
-
 .dashboard-container {
     display: flex;
-    flex-direction: row;
-    width: 100vw;
     height: 100vh;
-    background-color: rgb(108, 11, 11);
-    background-image: url('src/imagini/jkki6.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    font-family: Arial, sans-serif;
+    color: #f2f2f2;
+    background-color: #2e2e2e;
 }
 
 .sidebar {
-    flex: 0 0 33%;
+    width: 250px;
+    background-color: rgb(108, 11, 11);
+    color: #f2f2f2;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: rgb(147, 3, 3);
-    color: #000000;
-    border-right: 1px solid #930303;
 }
 
 .logo {
-    font-size: 100px;
+    font-size: 48px;
     margin-bottom: 20px;
 }
 
 .content {
     flex: 1;
-    display: flex;
-    flex-direction: column;
     padding: 20px;
-    background: rgba(108, 11, 11, 0.9);
-    color: #000000;
-    overflow: hidden;
+    overflow-y: auto;
 }
 
 .form-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.add-spending-form {
-    margin-bottom: 20px;
-    background: rgba(255, 255, 255, 0.1);
+    background-color: #3a3a3a;
+    border-radius: 8px;
     padding: 20px;
-    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .form-group {
     margin-bottom: 15px;
-    text-align: left;
 }
 
 .form-group label {
     display: block;
     margin-bottom: 5px;
+    font-weight: bold;
+    color: #f2f2f2;
 }
 
 .form-group input {
     width: 100%;
-    max-width: 300px;
     padding: 8px;
     border: 1px solid #ddd;
-    border-radius: 5px;
-    background: #fff;
-    color: #000;
-    box-sizing: border-box;
+    border-radius: 4px;
 }
 
-.add-button {
-    width: 100%;
-    max-width: 300px;
-    padding: 8px;
+.button {
     background-color: #930303;
-    color: #000000;
+    color: #000;
     border: none;
-    border-radius: 5px;
+    padding: 10px 15px;
+    border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
-    margin-top: 10px;
 }
 
-.add-button:hover {
+.button:hover {
     background-color: #da0909;
 }
 
-.spendings-container {
-    flex: 1;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.spendings-list ul {
-    list-style-type: none;
+.spendings-list {
+    list-style: none;
     padding: 0;
 }
 
-.spendings-list li {
-    width: 100%;
-    max-width: 700px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 10px;
+.spending-item {
+    background-color: #3a3a3a;
+    border-radius: 8px;
+    padding: 15px;
     margin-bottom: 10px;
-    background: #930303;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.spendings-list .remove-button {
-    background: none;
+.remove-button {
+    background-color: transparent;
     border: none;
-    color: white;
+    color: #da0909;
     cursor: pointer;
+    font-size: 16px;
 }
 
-.spendings-list .remove-button:hover {
-    color: red;
+.error {
+    color: #e74c3c;
+    margin-bottom: 15px;
+}
+
+.toggle-form-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #930303;
+    color: #000;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }

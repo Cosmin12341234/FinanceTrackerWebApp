@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPiggyBank, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPiggyBank, faTrash, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -16,62 +16,63 @@ const Dashboard = () => {
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(true);
+    const [isFormVisible, setIsFormVisible] = useState(false);
 
-    useEffect(() => {
-        const fetchUserId = async () => {
-            try {
-                if (!username) {
-                    throw new Error('Username not provided');
-                }
-
-                const response = await fetch(`http://localhost:8080/users/getIdByUsername/${username}`);
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch user: ${response.statusText}`);
-                }
-
-                const userId = await response.text();
-                console.log('User ID fetched:', userId);
-
-                if (!isNaN(userId)) {
-                    setUserId(Number(userId));
-                } else {
-                    console.error('Fetched data is not a valid ID:', userId);
-                    setError('User ID not found in the response.');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                setError(error.message);
+    const fetchUserId = useCallback(async () => {
+        try {
+            if (!username) {
+                throw new Error('Username not provided');
             }
-        };
 
-        fetchUserId();
+            const response = await fetch(`http://localhost:8080/users/getIdByUsername/${username}`);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch user: ${response.statusText}`);
+            }
+
+            const userId = await response.text();
+            console.log('User ID fetched:', userId);
+
+            if (!isNaN(userId)) {
+                setUserId(Number(userId));
+            } else {
+                console.error('Fetched data is not a valid ID:', userId);
+                setError('User ID not found in the response.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            setError(error.message);
+        }
     }, [username]);
 
-    useEffect(() => {
-        const fetchSpendings = async () => {
-            if (userId === null) {
-                return;
+    const fetchSpendings = useCallback(async () => {
+        if (userId === null) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/spendings/user/${userId}`);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch spendings: ${response.statusText}`);
             }
 
-            try {
-                const response = await fetch(`http://localhost:8080/spendings/user/${userId}`);
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch spendings: ${response.statusText}`);
-                }
-
-                const spendingsData = await response.json();
-                console.log('Spendings data fetched:', spendingsData);
-                setSpendings(spendingsData);
-                setLoading(false);
-            } catch (error) {
-                console.error('Error:', error);
-                setError(error.message);
-                setLoading(false);
-            }
-        };
-
-        fetchSpendings();
+            const spendingsData = await response.json();
+            console.log('Spendings data fetched:', spendingsData);
+            setSpendings(spendingsData);
+            setLoading(false);
+        } catch (error) {
+            console.error('Error:', error);
+            setError(error.message);
+            setLoading(false);
+        }
     }, [userId]);
+
+    useEffect(() => {
+        fetchUserId();
+    }, [fetchUserId]);
+
+    useEffect(() => {
+        fetchSpendings();
+    }, [fetchSpendings]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -111,6 +112,7 @@ const Dashboard = () => {
                 date: '',
                 category: ''
             });
+            setIsFormVisible(false);
         } catch (error) {
             console.error('Error:', error);
             setError(error.message);
@@ -134,99 +136,106 @@ const Dashboard = () => {
         }
     };
 
+    const toggleFormVisibility = () => {
+        setIsFormVisible(!isFormVisible);
+    };
+
     return (
         <div className="dashboard-container">
             <div className="sidebar">
                 <FontAwesomeIcon icon={faPiggyBank} className="logo" />
-                <p>{username}</p>
+                <h2>{username}</h2>
             </div>
             <div className="content">
-                {error ? (
-                    <p style={{ color: 'red' }}>{error}</p>
+                {error && <p className="error">{error}</p>}
+                {loading ? (
+                    <p>Loading spendings...</p>
                 ) : (
                     <>
-                        <div className="form-container">
-                            <form className="add-spending-form" onSubmit={handleAddSpending}>
-                                <div className="form-group">
-                                    <label htmlFor="amount">Amount:</label>
-                                    <input
-                                        type="number"
-                                        id="amount"
-                                        name="amount"
-                                        value={form.amount}
-                                        onChange={handleInputChange}
-                                        step="0.01"
-                                        required
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="location">Location:</label>
-                                    <input
-                                        type="text"
-                                        id="location"
-                                        name="location"
-                                        value={form.location}
-                                        onChange={handleInputChange}
-                                        required
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="date">Date:</label>
-                                    <input
-                                        type="datetime-local"
-                                        id="date"
-                                        name="date"
-                                        value={form.date}
-                                        onChange={handleInputChange}
-                                        required
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="category">Category:</label>
-                                    <input
-                                        type="text"
-                                        id="category"
-                                        name="category"
-                                        value={form.category}
-                                        onChange={handleInputChange}
-                                        required
-                                    />
-                                </div>
-                                <button type="submit" className="add-button">Add Spending</button>
-                            </form>
-                        </div>
-                        <div className="spendings-container">
-                            {loading ? (
-                                <p>Loading spendings...</p>
+                        {isFormVisible && (
+                            <div className="form-container">
+                                <h3>Add New Spending</h3>
+                                <form onSubmit={handleAddSpending}>
+                                    <div className="form-group">
+                                        <label htmlFor="amount">Amount:</label>
+                                        <input
+                                            type="number"
+                                            id="amount"
+                                            name="amount"
+                                            value={form.amount}
+                                            onChange={handleInputChange}
+                                            step="0.01"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="location">Location:</label>
+                                        <input
+                                            type="text"
+                                            id="location"
+                                            name="location"
+                                            value={form.location}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="date">Date:</label>
+                                        <input
+                                            type="datetime-local"
+                                            id="date"
+                                            name="date"
+                                            value={form.date}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="category">Category:</label>
+                                        <input
+                                            type="text"
+                                            id="category"
+                                            name="category"
+                                            value={form.category}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                    </div>
+                                    <button type="submit" className="button">Add Spending</button>
+                                </form>
+                            </div>
+                        )}
+                        <div>
+                            <h3>Your Spendings</h3>
+                            {spendings.length > 0 ? (
+                                <ul className="spendings-list">
+                                    {spendings.map((spending) => (
+                                        <li key={spending.id} className="spending-item">
+                                            <div>
+                                                <strong>{spending.amount.toFixed(2)} LEI</strong> - {spending.location}
+                                                <br />
+                                                <small>{new Date(spending.date).toLocaleString()} | {spending.category}</small>
+                                            </div>
+                                            <button
+                                                onClick={() => handleRemoveSpending(spending.id)}
+                                                title="Remove Spending"
+                                                className="remove-button"
+                                            >
+                                                <FontAwesomeIcon icon={faTrash} />
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
                             ) : (
-                                <div className="spendings-list">
-                                    {spendings.length > 0 ? (
-                                        <ul>
-                                            {spendings.map((spending) => (
-                                                <li key={spending.id}>
-                                                    <div><strong>Amount:</strong> {spending.amount.toFixed(2)} LEI</div>
-                                                    <div><strong>Location:</strong> {spending.location}</div>
-                                                    <div><strong>Date:</strong> {spending.date || 'N/A'}</div>
-                                                    <div><strong>Category:</strong> {spending.category}</div>
-                                                    <button
-                                                        className="remove-button"
-                                                        onClick={() => handleRemoveSpending(spending.id)}
-                                                        title="Remove Spending"
-                                                    >
-                                                        <FontAwesomeIcon icon={faTrash} />
-                                                    </button>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    ) : (
-                                        <p>No spendings found.</p>
-                                    )}
-                                </div>
+                                <p>No spendings found.</p>
                             )}
                         </div>
                     </>
                 )}
             </div>
+            <button onClick={toggleFormVisibility} className="toggle-form-button">
+                <FontAwesomeIcon icon={isFormVisible ? faTimes : faPlus} />
+            </button>
         </div>
     );
 };
